@@ -7,10 +7,11 @@ inputs:
   args:
     description: "Arguments to pass to atopile"
     required: true
-    default: "build"
+    default: "ato build"
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
+    - "-c"
     - ${{ inputs.args }}
