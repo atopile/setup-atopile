@@ -1,0 +1,16 @@
+# action.yml
+name: "run-atopile"
+
+description: "Run atopile CLI"
+
+inputs:
+  args:
+    description: "Arguments to pass to atopile"
+    required: true
+    default: ""
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.args }}
