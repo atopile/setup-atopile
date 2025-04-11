@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: atopile/setup-atopile@v1
         with:
-          # [Recommended]
           # Either: derive the version from a config file (e.g., pyproject.toml or ato.yaml)
+          # [Recommended]
           ato-config: "ato.yaml"
           # Or: Specify the atopile version directly
           version: "0.3.23"
