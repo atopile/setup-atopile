@@ -15,8 +15,8 @@ docker run --rm -i \
     --env ACTIONS_ID_TOKEN_REQUEST_URL \
     --env ACTIONS_ID_TOKEN_REQUEST_TOKEN \
     ${ATO_ENV_ARGS} \
-    -v "$(pwd)":/workspace \
-    -w /workspace \
+    -v "$(pwd)":"$(pwd)" \
+    -w "$(pwd)" \
     --entrypoint ato \
     "${IMAGE_NAME}" \
     "$@" # Pass all script arguments to the container's entrypoint
