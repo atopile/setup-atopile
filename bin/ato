@@ -11,9 +11,9 @@ done
 
 # Run the command inside the container
 docker run --rm -i \
+    -e NONINTERACTIVE=1 \
     --env ACTIONS_ID_TOKEN_REQUEST_URL \
     --env ACTIONS_ID_TOKEN_REQUEST_TOKEN \
-    --env NONINTERACTIVE \
     ${ATO_ENV_ARGS} \
     -v "$(pwd)":/workspace \
     -w /workspace \
