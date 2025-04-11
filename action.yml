@@ -20,6 +20,7 @@ runs:
     - uses: astral-sh/setup-uv@v5
       with:
         enable-cache: true
+        pyproject-file: "${{ github.action_path }}/pyproject.toml"
 
     - id: determine-atopile-version
       run: uv run python main.py >> $GITHUB_OUTPUT
