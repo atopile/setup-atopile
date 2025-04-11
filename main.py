@@ -15,7 +15,7 @@ def main():
 
     ato_config = os.environ.get("ATO_CONFIG")
     DEFAULT_ATO_CONFIG = Path("ato.yaml")
-    if ato_config or not DEFAULT_ATO_CONFIG.is_file():
+    if ato_config or DEFAULT_ATO_CONFIG.is_file():
         if not ato_config:
             ato_config = DEFAULT_ATO_CONFIG
 
@@ -25,6 +25,7 @@ def main():
             # FIXME: this is the dumbest way to do this
             atopile_version = requires_atopile.split(",")[0].strip("^=><* ")
             print(f"version={atopile_version}")
+            return
 
     raise RuntimeError("No version specified or detected.")
 
