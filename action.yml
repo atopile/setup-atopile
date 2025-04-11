@@ -1,5 +1,6 @@
 name: "setup-atopile"
 description: "Setup atopile"
+color: orange
 
 inputs:
   ato-config:
