@@ -14,14 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: atopile/run-atopile@v1
+      - uses: atopile/setup-atopile@v1
         with:
-
-          # Either: Specify the atopile version directly
-          atopile-version: "0.3.23"
-
-          # Or: derive the version from a config file (e.g., pyproject.toml or ato.yaml)
+          # [Recommended]
+          # Either: derive the version from a config file (e.g., pyproject.toml or ato.yaml)
           ato-config: "ato.yaml"
+          # Or: Specify the atopile version directly
+          atopile-version: "0.3.23"
 
       # Do something!
       - run: ato --version
