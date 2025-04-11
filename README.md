@@ -1,4 +1,4 @@
-# setup-atopile
+# Setup the atopile CLI in Github Actions
 
 A Github action to run atopile CLI ⚙️🚀
 
