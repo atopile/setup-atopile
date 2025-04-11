@@ -20,7 +20,7 @@ jobs:
           # Either: derive the version from a config file (e.g., pyproject.toml or ato.yaml)
           ato-config: "ato.yaml"
           # Or: Specify the atopile version directly
-          atopile-version: "0.3.23"
+          version: "0.3.23"
 
       # Do something!
       - run: ato --version
