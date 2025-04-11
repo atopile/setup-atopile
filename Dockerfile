@@ -1,3 +1,2 @@
-FROM ghcr.io/atopile/atopile-kicad:pr-1152
-
+FROM ghcr.io/atopile/atopile-kicad:main
 ENTRYPOINT ["bash"]
