@@ -10,15 +10,15 @@ def main():
 
     if specified_version := os.environ.get("SPECIFIED_VERSION"):
         print(f"version={specified_version}")
-    elif ato_config := os.environ.get("ATO_CONFIG"):
-        with open(ato_config, "r") as f:
-            config = yaml.load(f)
-            requires_atopile = config["requires-atopile"]
-            # FIXME: this is the dumbest way to do this
-            atopile_version = requires_atopile.split(",")[0].strip("^=><* ")
-            print(f"version={atopile_version}")
-    else:
-        raise ValueError("No ATO_CONFIG or SPECIFIED_VERSION provided")
+        return
+
+    ato_config = os.environ.get("ATO_CONFIG", "ato.yaml")
+    with open(ato_config, "r") as f:
+        config = yaml.load(f)
+        requires_atopile = config["requires-atopile"]
+        # FIXME: this is the dumbest way to do this
+        atopile_version = requires_atopile.split(",")[0].strip("^=><* ")
+        print(f"version={atopile_version}")
 
 
 if __name__ == "__main__":

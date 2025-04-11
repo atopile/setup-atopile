@@ -17,7 +17,7 @@ jobs:
       - uses: atopile/setup-atopile@v1
         with:
           # Either: derive the version from a config file (e.g., pyproject.toml or ato.yaml)
-          # [Recommended]
+          # [Recommended and default if neither are provided]
           ato-config: "ato.yaml"
           # Or: Specify the atopile version directly
           version: "0.3.23"

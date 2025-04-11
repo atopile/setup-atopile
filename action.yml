@@ -4,11 +4,11 @@ description: "Setup atopile"
 inputs:
   ato-config:
     description: 'Path to ato.yaml config, based on which to determine the version to run'
-    required: true
+    required: false
     default: ""
   version:
     description: 'A specific version of atopile to use'
-    required: true
+    required: false
     default: ""
 
 runs:
