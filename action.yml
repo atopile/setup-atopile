@@ -31,12 +31,16 @@ runs:
 
     - name: Pull atopile container
       run: >
-        docker build
-        --tag atopile-local
-        --build-arg BASE_IMAGE="ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
-        .
+        docker pull
+        "ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
       shell: bash
-      working-directory: ${{ github.action_path }}
+
+    - name: Tag atopile container
+      run: >
+        docker tag
+        "ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
+        "atopile-local"
+      shell: bash
 
     - name: Install alias
       run: echo "${{ github.action_path }}/bin" >> $GITHUB_PATH

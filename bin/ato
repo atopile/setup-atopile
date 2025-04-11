@@ -5,9 +5,10 @@ IMAGE_NAME="atopile-local"
 
 # Run the command inside the container
 docker run --rm -i \
-    -e ACTIONS_ID_TOKEN_REQUEST_URL \  # for OIDC
-    -e ACTIONS_ID_TOKEN_REQUEST_TOKEN \  # for OIDC
+    --env ACTIONS_ID_TOKEN_REQUEST_URL \
+    --env ACTIONS_ID_TOKEN_REQUEST_TOKEN \
     -v "$(pwd)":/workspace \
     -w /workspace \
+    --entrypoint ato \
     "${IMAGE_NAME}" \
     "$@" # Pass all script arguments to the container's entrypoint
