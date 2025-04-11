@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Define the Docker image name to use
+IMAGE_NAME="atopile-local"
+
+# Run the command inside the container
+docker run --rm -it \
+    --user "$(id -u):$(id -g)" \
+    -v "$(pwd)":/workspace \
+    -w /workspace \
+    "${IMAGE_NAME}" \
+    "$@" # Pass all script arguments to the container's entrypoint

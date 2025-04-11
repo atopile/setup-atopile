@@ -1,0 +1,20 @@
+on:
+  push:
+
+jobs:
+  test-explicit-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          version: "0.3.23"
+      - run: ato --version
+  test-ato-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          ato-config: "dummy-ato.yaml"
+      - run: ato --version

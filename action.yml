@@ -1,17 +1,38 @@
-# action.yml
-name: "run-atopile"
-
-description: "Run atopile CLI"
+name: "setup-atopile"
+description: "Setup atopile"
 
 inputs:
-  args:
-    description: "Arguments to pass to atopile"
+  ato-config:
+    description: 'Path to ato.yaml config, based on which to determine the version to run'
     required: true
-    default: "ato build"
+    default: ""
+  version:
+    description: 'A specific version of atopile to use'
+    required: true
+    default: ""
 
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  args:
-    - "-c"
-    - ${{ inputs.args }}
+  using: "composite"
+  steps:
+    - uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+
+    - id: determine-atopile-version
+      run: uv run python main.py >> $GITHUB_OUTPUT
+      shell: bash
+      env:
+        ATO_CONFIG: ${{ inputs.ato-config }}
+        SPECIFIED_VERSION: ${{ inputs.version }}
+
+    - name: Pull atopile container
+      run: >
+        docker build
+        --tag atopile-local
+        --build-arg BASE_IMAGE="ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
+        .
+      shell: bash
+
+    - name: Install alias
+      run: echo "$(pwd)/bin" >> $GITHUB_PATH
+      shell: bash
