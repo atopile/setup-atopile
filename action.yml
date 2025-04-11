@@ -1,5 +1,5 @@
 name: "setup-atopile"
-description: "Setup atopile"
+description: "Setup atopile CLI"
 branding:
   icon: "package"
   color: "orange"
