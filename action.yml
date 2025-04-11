@@ -19,7 +19,7 @@ runs:
   steps:
     - uses: astral-sh/setup-uv@v5
       with:
-        enable-cache: true
+        enable-cache: false
         pyproject-file: "${{ github.action_path }}/pyproject.toml"
 
     - id: determine-atopile-version
