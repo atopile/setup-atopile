@@ -139,20 +139,13 @@ def main():
         print(f"version={specified_version}")
         return
 
-    # Handle working directory
-    working_directory = os.environ.get("WORKING_DIRECTORY", ".")
-    working_path = Path(working_directory)
-
     ato_config = os.environ.get("ATO_CONFIG")
-    if ato_config:
-        # If ATO_CONFIG is specified, use it as-is (could be absolute or relative)
-        config_path = Path(ato_config)
-    else:
-        # Default to ato.yaml in the working directory
-        config_path = working_path / "ato.yaml"
+    DEFAULT_ATO_CONFIG = Path("ato.yaml")
+    if ato_config or DEFAULT_ATO_CONFIG.is_file():
+        if not ato_config:
+            ato_config = DEFAULT_ATO_CONFIG
 
-    if ato_config or config_path.is_file():
-        with open(config_path, "r") as f:
+        with open(ato_config, "r") as f:
             config = yaml.load(f)
             requires_atopile = config["requires-atopile"]
             available_versions = get_released_versions()

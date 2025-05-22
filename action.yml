@@ -27,12 +27,11 @@ runs:
         pyproject-file: "${{ github.action_path }}/pyproject.toml"
 
     - id: determine-atopile-version
-      run: uv run --project "${{ github.action_path }}" python "${{ github.action_path }}/main.py" >> $GITHUB_OUTPUT
+      run: uv run --project "${{ github.action_path }}" --directory "${{ inputs.working-directory }}" python "${{ github.action_path }}/main.py" >> $GITHUB_OUTPUT
       shell: bash
       env:
         ATO_CONFIG: ${{ inputs.ato-config }}
         SPECIFIED_VERSION: ${{ inputs.version }}
-        WORKING_DIRECTORY: ${{ inputs.working-directory }}
 
     - name: Pull atopile container
       run: >
