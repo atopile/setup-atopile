@@ -6,13 +6,17 @@ branding:
 
 inputs:
   ato-config:
-    description: 'Path to ato.yaml config, based on which to determine the version to run'
+    description: "Path to ato.yaml config, based on which to determine the version to run"
     required: false
     default: ""
   version:
-    description: 'A specific version of atopile to use'
+    description: "A specific version of atopile to use"
     required: false
     default: ""
+  working-directory:
+    description: "Working directory where to look for ato.yaml config"
+    required: false
+    default: "."
 
 runs:
   using: "composite"
@@ -28,6 +32,7 @@ runs:
       env:
         ATO_CONFIG: ${{ inputs.ato-config }}
         SPECIFIED_VERSION: ${{ inputs.version }}
+        WORKING_DIRECTORY: ${{ inputs.working-directory }}
 
     - name: Pull atopile container
       run: >

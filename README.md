@@ -21,9 +21,33 @@ jobs:
           ato-config: "ato.yaml"
           # Or: Specify the atopile version directly
           version: "0.3.23"
+          # Optionally: specify a working directory to look for ato.yaml
+          working-directory: "packages/my-package"
 
       # Do something!
       - run: ato --version
+```
+
+## Working with Multiple Packages
+
+You can use this action with multiple packages in different directories:
+
+```yaml
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [package1, package2, package3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: atopile/setup-atopile@v1
+        with:
+          working-directory: ${{ matrix.package }}
+      - run: ato sync
+        working-directory: ${{ matrix.package }}
+      - run: ato build
+        working-directory: ${{ matrix.package }}
 ```
 
 See the [action.yml](action.yml) for full details.
