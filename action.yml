@@ -6,13 +6,17 @@ branding:
 
 inputs:
   ato-config:
-    description: 'Path to ato.yaml config, based on which to determine the version to run'
+    description: "Path to ato.yaml config, based on which to determine the version to run"
     required: false
     default: ""
   version:
-    description: 'A specific version of atopile to use'
+    description: "A specific version of atopile to use"
     required: false
     default: ""
+  working-directory:
+    description: "Working directory where to look for ato.yaml config"
+    required: false
+    default: "."
 
 runs:
   using: "composite"
@@ -23,7 +27,7 @@ runs:
         pyproject-file: "${{ github.action_path }}/pyproject.toml"
 
     - id: determine-atopile-version
-      run: uv run --project "${{ github.action_path }}" python "${{ github.action_path }}/main.py" >> $GITHUB_OUTPUT
+      run: uv run --project "${{ github.action_path }}" --directory "${{ inputs.working-directory }}" python "${{ github.action_path }}/main.py" >> $GITHUB_OUTPUT
       shell: bash
       env:
         ATO_CONFIG: ${{ inputs.ato-config }}
