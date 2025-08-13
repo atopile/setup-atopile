@@ -3,11 +3,17 @@
 # Define the Docker image name to use
 IMAGE_NAME="atopile-local"
 
-# Prepare ATO_ env vars for docker
-ATO_ENV_ARGS=""
-for var_name in $(compgen -v ATO_); do
-    ATO_ENV_ARGS+=" --env $var_name"
-done
+prepare_env_args() {
+    local prefix=$1
+    local env_args=""
+    for var_name in $(compgen -v "$prefix"); do
+        env_args+=" --env $var_name"
+    done
+    echo "$env_args"
+}
+
+ATO_ENV_ARGS=$(prepare_env_args "ATO_")
+GITHUB_ENV_ARGS=$(prepare_env_args "GITHUB_")
 
 # Run the command inside the container
 docker run --rm -i \
@@ -15,6 +21,7 @@ docker run --rm -i \
     --env ACTIONS_ID_TOKEN_REQUEST_URL \
     --env ACTIONS_ID_TOKEN_REQUEST_TOKEN \
     ${ATO_ENV_ARGS} \
+    ${GITHUB_ENV_ARGS} \
     -v "$(pwd)":"$(pwd)" \
     -w "$(pwd)" \
     --entrypoint ato \
