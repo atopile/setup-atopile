@@ -132,6 +132,12 @@ def get_released_versions() -> list[Version]:
 
 
 def main():
+    # Branch takes precedence - convert slashes to dashes for Docker tag format
+    if specified_branch := os.environ.get("SPECIFIED_BRANCH"):
+        docker_tag = specified_branch.replace("/", "-")
+        print(f"version={docker_tag}")
+        return
+
     if os.environ.get("ATO_CONFIG") and os.environ.get("SPECIFIED_VERSION"):
         raise ValueError("Cannot specify both ATO_CONFIG and SPECIFIED_VERSION")
 

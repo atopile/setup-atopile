@@ -13,6 +13,10 @@ inputs:
     description: "A specific version of atopile to use"
     required: false
     default: ""
+  branch:
+    description: "A specific branch of atopile to use (e.g. 'feature/fabll_part2'). Takes precedence over version."
+    required: false
+    default: ""
   working-directory:
     description: "Working directory where to look for ato.yaml config"
     required: false
@@ -32,6 +36,7 @@ runs:
       env:
         ATO_CONFIG: ${{ inputs.ato-config }}
         SPECIFIED_VERSION: ${{ inputs.version }}
+        SPECIFIED_BRANCH: ${{ inputs.branch }}
 
     - name: Pull atopile container
       run: >
