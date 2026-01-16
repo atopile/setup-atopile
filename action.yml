@@ -37,6 +37,7 @@ runs:
         ATO_CONFIG: ${{ inputs.ato-config }}
         SPECIFIED_VERSION: ${{ inputs.version }}
         SPECIFIED_BRANCH: ${{ inputs.branch }}
+        GITHUB_TOKEN: ${{ github.token }}
 
     - name: Pull atopile container
       run: >

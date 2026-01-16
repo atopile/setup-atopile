@@ -8,6 +8,37 @@ from semver import Version
 yaml = YAML()
 
 
+def get_pr_number_for_branch(branch: str, repo: str = "atopile/atopile") -> str | None:
+    """
+    Look up the PR number for a given branch in the atopile repository.
+
+    Uses the GitHub API to find open PRs with the given head branch.
+    Returns the PR number as a string, or None if no PR is found.
+    """
+    # GitHub API endpoint to search for PRs by head branch
+    url = f"https://api.github.com/repos/{repo}/pulls"
+    params = {"head": f"atopile:{branch}", "state": "open"}
+
+    headers = {"Accept": "application/vnd.github.v3+json"}
+
+    # Use GITHUB_TOKEN if available for higher rate limits
+    if token := os.environ.get("GITHUB_TOKEN"):
+        headers["Authorization"] = f"token {token}"
+
+    try:
+        response = httpx.get(url, params=params, headers=headers, timeout=10)
+        response.raise_for_status()
+        prs = response.json()
+
+        if prs:
+            # Return the first matching PR number
+            return str(prs[0]["number"])
+    except (httpx.HTTPError, KeyError, IndexError):
+        pass
+
+    return None
+
+
 def parse(version_str: str) -> Version:
     """
     Robustly parse versions, even if a little wonky
@@ -132,8 +163,14 @@ def get_released_versions() -> list[Version]:
 
 
 def main():
-    # Branch takes precedence - convert slashes to dashes for Docker tag format
+    # Branch takes precedence - try to find PR number first, fall back to branch name
     if specified_branch := os.environ.get("SPECIFIED_BRANCH"):
+        # Try to find a PR for this branch to use the pr-<number> tag
+        if pr_number := get_pr_number_for_branch(specified_branch):
+            print(f"version=pr-{pr_number}")
+            return
+
+        # Fall back to branch name (convert slashes to dashes for Docker tag format)
         docker_tag = specified_branch.replace("/", "-")
         print(f"version={docker_tag}")
         return
