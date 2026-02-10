@@ -1,14 +1,10 @@
 [project]
 name = "run-atopile"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "A Github Action to run atopile"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "httpx>=0.28.1",
-    "ruamel-yaml>=0.18.10",
-    "semver>=3.0.4",
-]
+requires-python = ">=3.14,<3.15"
+dependencies = ["httpx>=0.28.1", "ruamel-yaml>=0.18.10", "semver>=3.0.4"]
 
 [tool.uv]
-required-version = ">=0.6.14,<0.7.0"
+required-version = ">=0.9.0"
