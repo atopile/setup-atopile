@@ -16,6 +16,14 @@ ATO_ENV_ARGS=$(prepare_env_args "ATO_")
 GITHUB_ENV_ARGS=$(prepare_env_args "GITHUB_")
 GIT_ENV_ARGS=$(prepare_env_args "GIT_")
 
+# Persist atopile log dir across container invocations so that
+# build history written by "ato build" is visible to other ci steps.
+FBRK_LOG_DIR="${FBRK_LOG_DIR:-${HOME}/.local/state/atopile/log}"
+mkdir -p "${FBRK_LOG_DIR}"
+export FBRK_LOG_DIR
+
+FBRK_ENV_ARGS=$(prepare_env_args "FBRK_")
+
 # Run the command inside the container
 docker run --rm -i \
     -e NONINTERACTIVE=1 \
@@ -24,7 +32,9 @@ docker run --rm -i \
     ${ATO_ENV_ARGS} \
     ${GITHUB_ENV_ARGS} \
     ${GIT_ENV_ARGS} \
+    ${FBRK_ENV_ARGS} \
     -v "$(pwd)":"$(pwd)" \
+    -v "${FBRK_LOG_DIR}":"${FBRK_LOG_DIR}" \
     -w "$(pwd)" \
     --entrypoint ato \
     "${IMAGE_NAME}" \
