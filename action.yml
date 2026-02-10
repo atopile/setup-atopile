@@ -25,30 +25,62 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # Only setup UV when we need to resolve version from ato.yaml / PyPI
     - uses: astral-sh/setup-uv@v5
+      if: ${{ !inputs.docker-tag && !inputs.version }}
       with:
         enable-cache: false
         pyproject-file: "${{ github.action_path }}/pyproject.toml"
 
     - name: Determine atopile version
-      id: determine-atopile-version
-      run: uv run --project "${{ github.action_path }}" --directory "${{ inputs.working-directory }}" python "${{ github.action_path }}/main.py" >> $GITHUB_OUTPUT
+      id: determine-version
       shell: bash
+      run: |
+        if [ -n "$DOCKER_TAG" ]; then
+          echo "version=$DOCKER_TAG" >> "$GITHUB_OUTPUT"
+          # docker-tag is typically a mutable ref (branch, PR, SHA) — don't cache
+          echo "cacheable=false" >> "$GITHUB_OUTPUT"
+        elif [ -n "$SPECIFIED_VERSION" ]; then
+          echo "version=$SPECIFIED_VERSION" >> "$GITHUB_OUTPUT"
+          echo "cacheable=true" >> "$GITHUB_OUTPUT"
+        else
+          uv run --project "${{ github.action_path }}" --directory "${{ inputs.working-directory }}" python "${{ github.action_path }}/main.py" >> "$GITHUB_OUTPUT"
+          # Version resolved from PyPI is always a specific immutable release
+          echo "cacheable=true" >> "$GITHUB_OUTPUT"
+        fi
       env:
         DOCKER_TAG: ${{ inputs.docker-tag }}
         ATO_CONFIG: ${{ inputs.ato-config }}
         SPECIFIED_VERSION: ${{ inputs.version }}
 
-    - name: Pull atopile container
-      run: >
-        docker pull
-        "ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
+    # Cache Docker image for immutable version tags (saves ~30s+ pull time)
+    - name: Cache Docker image
+      id: docker-cache
+      if: ${{ steps.determine-version.outputs.cacheable == 'true' }}
+      uses: actions/cache@v4
+      with:
+        path: /tmp/atopile-docker.tar
+        key: docker-atopile-kicad-${{ steps.determine-version.outputs.version }}
+
+    - name: Load cached Docker image
+      if: ${{ steps.docker-cache.outputs.cache-hit == 'true' }}
       shell: bash
+      run: docker load -i /tmp/atopile-docker.tar
+
+    - name: Pull Docker image
+      if: ${{ steps.docker-cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: docker pull "ghcr.io/atopile/atopile-kicad:${{ steps.determine-version.outputs.version }}"
+
+    - name: Save Docker image to cache
+      if: ${{ steps.docker-cache.outputs.cache-hit != 'true' && steps.determine-version.outputs.cacheable == 'true' }}
+      shell: bash
+      run: docker save -o /tmp/atopile-docker.tar "ghcr.io/atopile/atopile-kicad:${{ steps.determine-version.outputs.version }}"
 
     - name: Tag atopile container
       run: >
         docker tag
-        "ghcr.io/atopile/atopile-kicad:${{ steps.determine-atopile-version.outputs.version }}"
+        "ghcr.io/atopile/atopile-kicad:${{ steps.determine-version.outputs.version }}"
         "atopile-local"
       shell: bash
 

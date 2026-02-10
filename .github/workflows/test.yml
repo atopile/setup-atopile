@@ -18,3 +18,11 @@ jobs:
         with:
           ato-config: "tests/dummy-ato.yaml"
       - run: ato --version
+  test-docker-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          docker-tag: "0.3.23"
+      - run: ato --version
